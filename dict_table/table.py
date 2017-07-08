@@ -1,7 +1,7 @@
 import itertools
 
-from row import TableRow
-from utils.number_utils import parse_decimal, number_to_str
+from .row import TableRow
+from .utils.number_utils import parse_decimal, number_to_str
 
 
 class DictTable(list):
