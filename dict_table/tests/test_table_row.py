@@ -1,6 +1,6 @@
 import unittest
 
-from table_row import TableRow
+from row import TableRow
 
 
 class TestTableRow(unittest.TestCase):

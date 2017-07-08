@@ -1,12 +1,9 @@
 import csv
 
-from dict_table import DictTable
+from table import DictTable
 
 
 class TableCsvStorage(object):
-    def __init__(self):
-        pass
-
     @staticmethod
     def import_from_file_path(file_path, delimiter=';'):
         with open(file_path, 'r') as file:

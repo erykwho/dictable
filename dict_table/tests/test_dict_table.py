@@ -1,7 +1,7 @@
 import unittest
 from decimal import Decimal
 
-from dict_table import DictTable
+from table import DictTable
 
 
 class TestTable(unittest.TestCase):
