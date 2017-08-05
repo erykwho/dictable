@@ -153,15 +153,20 @@ class DictTable(list):
                         target_row.update({equivalence[replace_column]: number_to_str(table_row[replace_column])})
         return target
 
-    def group_by(self, columns=None):
+    def group_by(self, columns=None, count=False):
         distinct_columns = self.distinct_columns(columns)
         summary_options = self.combinations(distinct_columns)
 
         result = list()
         for summary_option in summary_options:
+            matches = 0
             for row in self.table:
                 if TableRow(row).match(row_to_match=summary_option, columns=distinct_columns.keys()):
-                    result.append(summary_option)
-                    break
+                    matches += 1
+
+            if matches:
+                if count:
+                    summary_option['count'] = matches
+                result.append(summary_option)
 
         return result

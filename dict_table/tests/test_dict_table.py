@@ -254,5 +254,16 @@ class TestGroupBy(unittest.TestCase):
         self.assertTrue(expected.match(actual))
 
 
+    def test_group_by_count(self):
+        expected = DictTable([
+            {'A': 1, 'B': 'foo', 'count': 2},
+            {'A': 1, 'B': 'bar', 'count': 1},
+            {'A': 2, 'B': 'bar', 'count': 2},
+            {'A': 3, 'B': 'bar', 'count': 2},
+        ])
+
+        actual = self.table.group_by(count=True)
+        self.assertTrue(expected.match(actual))
+
 if __name__ == '__main__':
     unittest.main()
