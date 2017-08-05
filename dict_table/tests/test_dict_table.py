@@ -197,5 +197,52 @@ class TestTable(unittest.TestCase):
         self.assertEqual(expected, actual)
 
 
+class TestGroupBy(unittest.TestCase):
+    def setUp(self):
+        self.table = DictTable([
+            {'A': 1, 'B': 'foo'},
+            {'A': 2, 'B': 'bar'},
+            {'A': 3, 'B': 'bar'},
+            {'A': 1, 'B': 'bar'},
+            {'A': 2, 'B': 'bar'},
+            {'A': 3, 'B': 'bar'},
+            {'A': 1, 'B': 'foo'},
+        ])
+
+        self.table_1 = DictTable([
+            {'A': 1, 'B': 'foo'},
+            {'A': 2, 'B': 'bar'},
+            {'A': 3, 'B': 'wat'},
+            {'A': 1, 'B': 'wat'},
+            {'A': 2, 'B': 'bar'},
+            {'A': 3, 'B': 'bar'},
+            {'A': 1, 'B': 'foo'},
+        ])
+
+    def tearDown(self):
+        pass
+
+    def test_group_by_without_passing_arguments(self):
+        expected = DictTable([
+            {'A': 1, 'B': 'foo'},
+            {'A': 1, 'B': 'bar'},
+            {'A': 2, 'B': 'bar'},
+            {'A': 3, 'B': 'bar'},
+        ])
+        actual = self.table.group_by()
+        self.assertTrue(expected.match(actual))
+
+    def test_group_by_without_passing_arguments_2(self):
+        expected = DictTable([
+            {'A': 1, 'B': 'foo'},
+            {'A': 3, 'B': 'wat'},
+            {'A': 2, 'B': 'bar'},
+            {'A': 1, 'B': 'wat'},
+            {'A': 3, 'B': 'bar'},
+        ])
+        actual = self.table_1.group_by()
+        self.assertTrue(expected.match(actual))
+
+
 if __name__ == '__main__':
     unittest.main()

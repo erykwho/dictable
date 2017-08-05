@@ -37,6 +37,11 @@ class DictTable(list):
     def _sort(self):
         self.table = self.sort(self.table)
 
+    def sort_all(self, table):
+        for column in table[0].keys():
+            table = self.sort(table, column)
+        return table
+
     @staticmethod
     def sort(table, column=None, **kwargs):
         column = column or sorted(table[0].keys())[0]
@@ -57,8 +62,8 @@ class DictTable(list):
 
         table = self.table
         if not ordered:
-            table_to_match = self.sort(table_to_match)
-            table = self.sort(self.table)
+            table_to_match = self.sort_all(table_to_match)
+            table = self.sort_all(self.table)
 
         return self._match(table, table_to_match, columns_to_match)
 
@@ -89,7 +94,7 @@ class DictTable(list):
         :param columns: A list of columns
         :return: A dictionary-list containing all distinct values for each column
         """
-        if not isinstance(columns, type(list())):
+        if not hasattr(columns, '__iter__'):
             raise TypeError("Parameter columns should be a list")
 
         return {
@@ -135,3 +140,20 @@ class DictTable(list):
                     for replace_column in merge_columns:
                         target_row.update({equivalence[replace_column]: number_to_str(table_row[replace_column])})
         return target
+
+    def group_by(self):
+        distinct_columns = self.get_distinct_columns(self[0].keys())
+        return self._group_by(distinct_columns)
+
+    def _group_by(self, columns):
+
+        group_by_columns = list(columns.keys())
+        summary_options = self.create_combination_table(columns)
+        result = list()
+        for summary_option in summary_options:
+            for row in self.table:
+                if TableRow(row).match(summary_option, group_by_columns):
+                    result.append(summary_option)
+                    break
+
+        return DictTable(result)
