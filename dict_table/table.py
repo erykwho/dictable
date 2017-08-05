@@ -1,4 +1,5 @@
 import itertools
+from collections import OrderedDict
 
 from dict_table.row import TableRow
 from dict_table.utils.number_utils import parse_decimal, number_to_str
@@ -37,6 +38,20 @@ class DictTable(list):
     def _sort(self):
         self.table = self.sort(self.table)
 
+    def sort_all(self, table):
+        table = self.sort_by_keys(table)
+
+        for column in set(table[0].keys()):
+            table = self.sort(table, column)
+
+        return table
+
+    @staticmethod
+    def sort_by_keys(table):
+        for (index, row) in enumerate(table):
+            table[index] = OrderedDict(sorted(row.items()))
+        return table
+
     @staticmethod
     def sort(table, column=None, **kwargs):
         column = column or sorted(table[0].keys())[0]
@@ -57,8 +72,8 @@ class DictTable(list):
 
         table = self.table
         if not ordered:
-            table_to_match = self.sort(table_to_match)
-            table = self.sort(self.table)
+            table_to_match = self.sort_all(table_to_match)
+            table = self.sort_all(self.table)
 
         return self._match(table, table_to_match, columns_to_match)
 
@@ -69,7 +84,7 @@ class DictTable(list):
                 return False
         return True
 
-    def get_distinct_column(self, column):
+    def distinct_column(self, column):
         """
         Get the distinct values of a given column
         
@@ -82,24 +97,26 @@ class DictTable(list):
                 distinct_values.append(row[column])
         return list(set(distinct_values))
 
-    def get_distinct_columns(self, columns):
+    def distinct_columns(self, columns=None):
         """
         Get the distinct values form a list of columns
         
-        :param columns: A list of columns
+        :param columns: A list of columns. If None, all the columns of self will be considered.
         :return: A dictionary-list containing all distinct values for each column
         """
-        if not isinstance(columns, type(list())):
-            raise TypeError("Parameter columns should be a list")
+
+        if not columns:
+            columns = self[0].keys()
 
         return {
-            column: self.get_distinct_column(column) for column in columns
+            column: self.distinct_column(column) for column in columns
         }
+
 
     def summarize(self, group_by_options, columns_to_sum):
 
         group_by_columns = list(group_by_options.keys())
-        summary_options = self.create_combination_table(group_by_options)
+        summary_options = self.combinations(group_by_options)
 
         for row in self.table:
             for (index, summary_option) in enumerate(summary_options):
@@ -112,7 +129,7 @@ class DictTable(list):
         return DictTable(summary_options)
 
     @staticmethod
-    def create_combination_table(combinations):
+    def combinations(combinations):
         """
         Create a table using combinatorial analysis. 
         
@@ -135,3 +152,21 @@ class DictTable(list):
                     for replace_column in merge_columns:
                         target_row.update({equivalence[replace_column]: number_to_str(table_row[replace_column])})
         return target
+
+    def group_by(self, columns=None, count=False):
+        distinct_columns = self.distinct_columns(columns)
+        summary_options = self.combinations(distinct_columns)
+
+        result = list()
+        for summary_option in summary_options:
+            matches = 0
+            for row in self.table:
+                if TableRow(row).match(row_to_match=summary_option, columns=distinct_columns.keys()):
+                    matches += 1
+
+            if matches:
+                if count:
+                    summary_option['count'] = matches
+                result.append(summary_option)
+
+        return result
