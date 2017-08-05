@@ -90,13 +90,13 @@ class TestTable(unittest.TestCase):
 
     def test_table_distinct(self):
         table_1 = DictTable(self.table_1)
-        actual = table_1.get_distinct_column('colA')
+        actual = table_1.distinct_column('colA')
         expected = [1, 2]
         self.assertEqual(expected, actual)
 
     def test_table_distinct_columns(self):
         table_4 = DictTable(self.table_4)
-        actual = table_4.get_distinct_columns(['colA', 'colC'])
+        actual = table_4.distinct_columns(['colA', 'colC'])
         expected = {'colA': [1, 2], 'colC': [5]}
         self.assertEqual(expected, actual)
 
@@ -241,6 +241,16 @@ class TestGroupBy(unittest.TestCase):
             {'A': 3, 'B': 'bar'},
         ])
         actual = self.table_1.group_by()
+        self.assertTrue(expected.match(actual))
+
+    def test_group_by_passing_group_by_columns(self):
+        expected = DictTable([
+            {'A': 1, 'B': 'foo'},
+            {'A': 1, 'B': 'bar'},
+            {'A': 2, 'B': 'bar'},
+            {'A': 3, 'B': 'bar'},
+        ])
+        actual = self.table.group_by(['A', 'B'])
         self.assertTrue(expected.match(actual))
 
 
