@@ -253,7 +253,6 @@ class TestGroupBy(unittest.TestCase):
         actual = self.table.group_by(['A', 'B'])
         self.assertTrue(expected.match(actual))
 
-
     def test_group_by_count(self):
         expected = DictTable([
             {'A': 1, 'B': 'foo', 'count': 2},
@@ -264,6 +263,33 @@ class TestGroupBy(unittest.TestCase):
 
         actual = self.table.group_by(count=True)
         self.assertTrue(expected.match(actual))
+
+
+class TestSum(unittest.TestCase):
+    def setUp(self):
+        self.table = [
+            {'a': 1, 'b': '2.50', 'c': 1},
+            {'a': 2, 'b': '3.5', 'c': 'a'},
+            {'a': 5, 'b': '7.5', 'c': 10},
+        ]
+
+    def tearDown(self):
+        pass
+
+    def test_sum_column_type_number(self):
+        expected = 1 + 2 + 5
+        actual = DictTable(self.table).sum('a')
+        self.assertEqual(expected, actual)
+
+    def test_sum_column_type_not_number_but_number(self):
+        expected = 2.5 + 3.5 + 7.5
+        actual = DictTable(self.table).sum('b')
+        self.assertEqual(expected, actual)
+
+    def test_sum_column_type_not_number_should_raise_exception(self):
+        with self.assertRaises(Exception):
+            DictTable(self.table).sum('c')
+
 
 if __name__ == '__main__':
     unittest.main()

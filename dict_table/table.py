@@ -1,6 +1,8 @@
 import itertools
 from collections import OrderedDict
 
+from decimal import Decimal
+
 from dict_table.row import TableRow
 from dict_table.utils.number_utils import parse_decimal, number_to_str
 
@@ -170,3 +172,9 @@ class DictTable(list):
                 result.append(summary_option)
 
         return result
+
+    def sum(self, column):
+        value = 0
+        for row in self.table:
+            value += Decimal(row[column])
+        return value
