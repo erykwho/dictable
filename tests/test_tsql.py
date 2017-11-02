@@ -1,6 +1,6 @@
-from query_deliverer import QueryDeliverer
+from dictable.query_deliverer import QueryDeliverer
 from tests.dictsql_test_case import DicTSQLTestCase
-from dict_tsql import DicTSQL
+from dictable.dict_tsql import DicTSQL
 
 
 class TestTableToSql(DicTSQLTestCase):
