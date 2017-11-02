@@ -4,7 +4,7 @@ from dictable.dict_table import DicTable
 
 class DicTSQL(DicTable):
     def __init__(self, table):
-        super().__init__(table)
+        super(DicTSQL, self).__init__(table)
 
     def create_table_syntax(self, table_name, column_order=None):
         """
