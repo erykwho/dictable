@@ -1,4 +1,4 @@
-class TableRow(dict):
+class DicTableRow(dict):
     def __init__(self, row):
         dict.__init__(self, row)
         self.row = row

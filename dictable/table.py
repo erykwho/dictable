@@ -1,13 +1,13 @@
 import itertools
 from collections import OrderedDict
-
 from decimal import Decimal
 
-from dict_table.row import TableRow
-from dict_table.utils.number_utils import parse_decimal, number_to_str
+from row import DicTableRow
+from sql.query_deliverer import QueryDeliverer
+from utils.number_utils import parse_decimal, number_to_str
 
 
-class DictTable(list):
+class DicTable(list):
     """
         A TableManager object is an abstraction of a real Table.
         It is a list of dicts containing the same headers.
@@ -82,7 +82,7 @@ class DictTable(list):
     @staticmethod
     def _match(table_1, table_2, columns_to_match):
         for i in range(len(table_2)):
-            if not TableRow(table_1[i]).match(table_2[i], columns_to_match):
+            if not DicTableRow(table_1[i]).match(table_2[i], columns_to_match):
                 return False
         return True
 
@@ -114,7 +114,6 @@ class DictTable(list):
             column: self.distinct_column(column) for column in columns
         }
 
-
     def summarize(self, group_by_options, columns_to_sum):
 
         group_by_columns = list(group_by_options.keys())
@@ -122,13 +121,13 @@ class DictTable(list):
 
         for row in self.table:
             for (index, summary_option) in enumerate(summary_options):
-                if TableRow(row).match(summary_option, group_by_columns):
+                if DicTableRow(row).match(summary_option, group_by_columns):
                     for element in columns_to_sum:
                         summary_options[index][element] = summary_options[index].get(element, 0) + parse_decimal(
                             row[element])
                     break
 
-        return DictTable(summary_options)
+        return DicTable(summary_options)
 
     @staticmethod
     def combinations(combinations):
@@ -139,7 +138,7 @@ class DictTable(list):
         combinations for the key.  
         :return: A Table where each row is a different combination
         """
-        combination_table = DictTable(list())
+        combination_table = DicTable(list())
         columns = list(combinations.keys())
 
         for combination in itertools.product(*(combinations[column] for column in columns)):
@@ -150,7 +149,7 @@ class DictTable(list):
     def merge(self, target, constraints, merge_columns, equivalence):
         for target_row in target:
             for table_row in self.table:
-                if TableRow(table_row).match(target_row, constraints, equivalence):
+                if DicTableRow(table_row).match(target_row, constraints, equivalence):
                     for replace_column in merge_columns:
                         target_row.update({equivalence[replace_column]: number_to_str(table_row[replace_column])})
         return target
@@ -163,7 +162,7 @@ class DictTable(list):
         for summary_option in summary_options:
             matches = 0
             for row in self.table:
-                if TableRow(row).match(row_to_match=summary_option, columns=distinct_columns.keys()):
+                if DicTableRow(row).match(row_to_match=summary_option, columns=distinct_columns.keys()):
                     matches += 1
 
             if matches:
@@ -178,3 +177,24 @@ class DictTable(list):
         for row in self.table:
             value += Decimal(row[column])
         return value
+
+    def parse_to_tsql(self, table_name, column_order=None, existing_query=None):
+        if not column_order:
+            return
+        create_table_sql = QueryDeliverer().tsql_create_table
+        row_queries = []
+        for row in self.table:
+            row_columns = ', '.join(
+                '{} AS {}'.format(self._parse_type(row[column]), column)
+                for column in column_order)
+            row_queries.append('SELECT {}'.format(row_columns))
+
+        sub_select_statement = ' UNION ALL\n'.join(row_queries)
+        return create_table_sql.format(table_name=table_name, sub_select_statement=sub_select_statement)
+
+    @staticmethod
+    def _parse_type(value):
+        if isinstance(value, str):
+            return '\"{}\"'.format(value)
+
+        return str(value)

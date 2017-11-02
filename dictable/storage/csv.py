@@ -1,6 +1,6 @@
 import csv
 
-from dict_table.table import DictTable
+from dictable.table import DicTable
 
 
 class TableCsvStorage(object):
@@ -26,4 +26,4 @@ def _import_from_file(file, delimiter=';'):
     content = list()
     for row in reader:
         content.append(row)
-    return DictTable(content)
+    return DicTable(content)
