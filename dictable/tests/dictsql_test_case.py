@@ -1,6 +1,6 @@
 import unittest
 
-from utils.query import clean_query
+from query_utils import clean_query
 
 
 class DicTSQLTestCase(unittest.TestCase):

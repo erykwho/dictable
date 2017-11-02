@@ -1,6 +1,6 @@
-from sql.query_deliverer import QueryDeliverer
+from query_deliverer import QueryDeliverer
 from tests.dictsql_test_case import DicTSQLTestCase
-from tsql import DicTSQL
+from dict_tsql import DicTSQL
 
 
 class TestTableToSql(DicTSQLTestCase):

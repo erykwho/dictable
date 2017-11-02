@@ -1,6 +1,6 @@
 import unittest
 
-from row import DicTableRow
+from dict_table_row import DicTableRow
 
 
 class TestTableRow(unittest.TestCase):

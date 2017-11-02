@@ -1,5 +1,5 @@
-from sql.query_deliverer import QueryDeliverer
-from table import DicTable
+from query_deliverer import QueryDeliverer
+from dict_table import DicTable
 
 
 class DicTSQL(DicTable):
@@ -14,7 +14,7 @@ class DicTSQL(DicTable):
             table_name: the name of the table to be created
             column_order: the order of columns
 
-        Returns: String containing the sql script to create table
+        Returns: String containing the static script to create table
             The generated query will have the provided column order
             and will follow the order of the rows of the dictable
         """
@@ -53,6 +53,6 @@ class DicTSQL(DicTable):
     @staticmethod
     def _union_queries(queries):
         """
-            UNION-ALL-lize a list of queries
+            UNION-ALL-lize a list of static
         """
         return ' UNION ALL\n'.join(queries)
