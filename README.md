@@ -1,3 +1,5 @@
+[![Coverage Status](https://coveralls.io/repos/github/otrabalhador/dictable/badge.svg?branch=master)](https://coveralls.io/github/otrabalhador/dictable?branch=master)
+
 # DicTable
 
 Work with table-like variables in python like a charm!
