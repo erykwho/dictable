@@ -1,1 +1,1 @@
-pyqybe/static/*
+include dictable/static/sql_templates/TSQL/*.sql
