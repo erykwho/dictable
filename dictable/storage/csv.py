@@ -1,6 +1,6 @@
 import csv
 
-from dictable.table import DicTable
+from table import DicTable
 
 
 class TableCsvStorage(object):

@@ -3,7 +3,7 @@ import unittest
 from utils.query import clean_query
 
 
-class DicTableTestCase(unittest.TestCase):
+class DicTSQLTestCase(unittest.TestCase):
     def assertEqualQueries(self, first_query, second_query, msg=None):
         """Fail if the two objects are unequal as determined by the '=='
            operator.

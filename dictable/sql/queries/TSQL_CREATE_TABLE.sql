@@ -4,5 +4,5 @@ SELECT
 INTO #{table_name}
 FROM
     (
-        {sub_select_statement}
+        {select_statement}
     ) {table_name}

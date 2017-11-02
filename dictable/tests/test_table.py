@@ -1,8 +1,7 @@
 import unittest
 from decimal import Decimal
 
-from dictable.table import DicTable
-from tests.sql_test_case import DicTableTestCase
+from table import DicTable
 
 
 class TestTable(unittest.TestCase):
@@ -290,62 +289,6 @@ class TestSum(unittest.TestCase):
     def test_sum_column_type_not_number_should_raise_exception(self):
         with self.assertRaises(Exception):
             DicTable(self.table).sum('c')
-
-
-class TestTableToSql(DicTableTestCase):
-    def test_parse_to_sql(self):
-        table = [
-            {'A': 1, 'B': '2.50', 'C': 'foo'},
-            {'A': 2, 'B': '3.5', 'C': 'bar'},
-            {'A': 5, 'B': '7.5', 'C': 'pip'},
-        ]
-        table_name = 'foo'
-        expected_query = '''\
-DROP TABLE IF EXISTS #{table_name}
-SELECT
-    * 
-INTO #{table_name}
-FROM (
-    SELECT 1 AS A, "2.50" AS B, "foo" AS C UNION ALL
-    SELECT 2 AS A, "3.5" AS B, "bar" AS C UNION ALL
-    SELECT 5 AS A, "7.5" AS B, "pip" AS C
-) {table_name}
-'''.format(table_name=table_name)
-
-        actual_query = DicTable(table).parse_to_tsql(table_name=table_name, column_order=['A', 'B', 'C'])
-        self.maxDiff = None
-        self.assertEqualQueries(expected_query, actual_query)
-
-    def test_parse_to_sql_existing_query(self):
-        table = [
-            {'a': 1, 'b': '2.50', 'c': 'foo'},
-            {'a': 2, 'b': '3.5', 'c': 'bar'},
-            {'a': 5, 'b': '7.5', 'c': 'pip'},
-        ]
-        table_name = 'foo'
-        existing_query = '''\
-DROP TABLE IF EXISTS #{table_name}
-SELECT * 
-INTO #{table_name}
-FROM (
-    SELECT 10 AS A, "pip" AS B, 'pap' AS C
-)
-'''.format(table_name=table_name)
-
-        expected_query = '''\
-DROP TABLE IF EXISTS #{table_name}
-SELECT * 
-INTO #{table_name}
-FROM (
-    SELECT 10 AS A, "pip" AS B, 'pap' AS C UNION ALL
-    SELECT 1 AS A, "2.50" AS B, 'foo' AS C UNION ALL
-    SELECT 2 AS A, "3.5" AS B, 'bar' AS C UNION ALL
-    SELECT 5 AS A, "7.5" AS B, 'pip' AS C
-)
-'''.format(table_name=table_name)
-
-        actual_query = DicTable(table).parse_to_tsql(existing_query=existing_query)
-        # self.assertEqual(expected_query, actual_query)
 
 
 if __name__ == '__main__':

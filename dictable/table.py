@@ -3,7 +3,6 @@ from collections import OrderedDict
 from decimal import Decimal
 
 from row import DicTableRow
-from sql.query_deliverer import QueryDeliverer
 from utils.number_utils import parse_decimal, number_to_str
 
 
@@ -178,23 +177,17 @@ class DicTable(list):
             value += Decimal(row[column])
         return value
 
-    def parse_to_tsql(self, table_name, column_order=None, existing_query=None):
-        if not column_order:
-            return
-        create_table_sql = QueryDeliverer().tsql_create_table
-        row_queries = []
-        for row in self.table:
-            row_columns = ', '.join(
-                '{} AS {}'.format(self._parse_type(row[column]), column)
-                for column in column_order)
-            row_queries.append('SELECT {}'.format(row_columns))
+    def columns(self, ordered=False):
+        """
+            Get dictable columns
+        :param ordered: Boolean. If true, the returned
+            will follow the ascendant order of the
+            columns
+        Returns: List containing columns of dictable
+        """
+        row = self.table[0]
+        keys = row.keys()
+        if ordered:
+            keys = sorted(keys)
 
-        sub_select_statement = ' UNION ALL\n'.join(row_queries)
-        return create_table_sql.format(table_name=table_name, sub_select_statement=sub_select_statement)
-
-    @staticmethod
-    def _parse_type(value):
-        if isinstance(value, str):
-            return '\"{}\"'.format(value)
-
-        return str(value)
+        return keys
