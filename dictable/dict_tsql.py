@@ -1,5 +1,5 @@
-from query_deliverer import QueryDeliverer
-from dict_table import DicTable
+from dictable.query_deliverer import QueryDeliverer
+from dictable.dict_table import DicTable
 
 
 class DicTSQL(DicTable):

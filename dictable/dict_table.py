@@ -2,8 +2,8 @@ import itertools
 from collections import OrderedDict
 from decimal import Decimal
 
-from number_utils import parse_decimal, number_to_str
-from dict_table_row import DicTableRow
+from dictable.number_utils import parse_decimal, number_to_str
+from dictable.dict_table_row import DicTableRow
 
 
 class DicTable(list):

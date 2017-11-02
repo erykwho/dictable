@@ -1,6 +1,4 @@
-import storage
-
-from dict_table import DicTable
+from dictable.dict_table import DicTable
 
 
 class TableCsvStorage(object):
