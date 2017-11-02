@@ -22,6 +22,7 @@ setup(name='dictable',
       author_email='erykwho@gmail.com',
       url='https://github.com/otrabalhador/dictable/',
       packages=['dictable'],
+      include_package_data=True,
       keywords='dict table query dictable dictsql table row list dictionary',
       classifiers=[
           'Programming Language :: Python :: 2',
