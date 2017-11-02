@@ -1,15 +1,15 @@
 import unittest
 
-from row import TableRow
+from dict_table_row import DicTableRow
 
 
 class TestTableRow(unittest.TestCase):
     def setUp(self):
-        self.row_1 = TableRow({'a': 2, 'b': 3, 'c': 4})
-        self.row_2 = TableRow({'a': 2, 'b': 3, 'c': 4})
-        self.row_3 = TableRow({'aa': 2, 'ba': 3, 'ca': 4})
-        self.row_4 = TableRow({'a': 1, 'b': 3, 'c': 4})
-        self.row_5 = TableRow({'a': 2, 'b': 3, 'c': 4, 'd': 5})
+        self.row_1 = DicTableRow({'a': 2, 'b': 3, 'c': 4})
+        self.row_2 = DicTableRow({'a': 2, 'b': 3, 'c': 4})
+        self.row_3 = DicTableRow({'aa': 2, 'ba': 3, 'ca': 4})
+        self.row_4 = DicTableRow({'a': 1, 'b': 3, 'c': 4})
+        self.row_5 = DicTableRow({'a': 2, 'b': 3, 'c': 4, 'd': 5})
 
     def tearDown(self):
         pass
